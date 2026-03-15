@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from "react"
-import GlassCard from "../components/ui/GlassCard"
+import GlassCard from "../components/cards/GlassCard"
 import SectionTitle from "../components/ui/SectionTitle"
 import {useNavigate} from "react-router-dom"
 
@@ -64,7 +64,7 @@ setUser({...user,photo:url})
 
 return(
 
-<div className="">
+<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
 
 <h1 className="text-3xl font-bold mb-8">
 My Profile

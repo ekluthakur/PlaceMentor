@@ -14,7 +14,7 @@ export default function NavbarUser() {
       {/* Logo */}
       <div
         className="flex items-center gap-2 cursor-pointer"
-        onClick={()=>navigate("/dashboard")}
+        onClick={()=>navigate("/")}
       >
 
       <img
@@ -32,7 +32,7 @@ export default function NavbarUser() {
       {/* Menu */}
       <div className="flex gap-6 items-center">
 
-        <Link to="/dashboard" className="hover:text-blue-600">Dashboard</Link>
+        <Link to="/" className="hover:text-blue-600">Dashboard</Link>
         <Link to="/interview-setup" className="hover:text-blue-600">Interview</Link>
         <Link to="/resume-upload" className="hover:text-blue-600">Resume</Link>
         <Link to="/analytics" className="hover:text-blue-600">Analytics</Link>

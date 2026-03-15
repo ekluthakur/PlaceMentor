@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react"
 import {useNavigate} from "react-router-dom"
-import GlassCard from "../components/ui/GlassCard"
+import GlassCard from "../components/cards/GlassCard"
 import SectionTitle from "../components/ui/SectionTitle"
 
 export default function ProfileAnalytics(){

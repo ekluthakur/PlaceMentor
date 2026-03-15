@@ -1,65 +1,27 @@
-export function generateQuestions(company, role, difficulty) {
+import frontend from "../data/questions/frontend.json"
+import hr from "../data/questions/hr.json"
+import aptitude from "../data/questions/aptitude.json"
+import reasoning from "../data/questions/reasoning.json"
 
-  const questionBank = {
+export function generateQuestions(type){
 
-    Google: {
-      Frontend: {
-        Easy: [
-          "What is HTML?",
-          "What is CSS?",
-          "What is JavaScript?"
-        ],
-        Medium: [
-          "Explain the Virtual DOM.",
-          "What are React Hooks?",
-          "Difference between let, var, and const."
-        ],
-        Hard: [
-          "Explain React Fiber architecture.",
-          "How does React reconciliation work?",
-          "Difference between CSR and SSR."
-        ]
-      }
-    },
+switch(type){
 
-    Amazon: {
-      Frontend: {
-        Easy: [
-          "What is responsive design?",
-          "What is Flexbox?"
-        ],
-        Medium: [
-          "Explain event bubbling in JavaScript.",
-          "What is the DOM?"
-        ],
-        Hard: [
-          "Explain JavaScript closures.",
-          "What is memoization?"
-        ]
-      }
-    },
+case "technical":
+return frontend
 
-    TCS: {
-      Frontend: {
-        Easy: [
-          "What is a variable?",
-          "What is a function?"
-        ],
-        Medium: [
-          "Explain array methods in JavaScript.",
-          "What is JSON?"
-        ],
-        Hard: [
-          "Explain asynchronous programming.",
-          "What is a promise in JavaScript?"
-        ]
-      }
-    }
+case "hr":
+return hr
 
-  }
+case "aptitude":
+return aptitude
 
-  return (
-    questionBank[company]?.Frontend?.[difficulty] ||
-    ["Tell me about yourself."]
-  )
+case "reasoning":
+return reasoning
+
+default:
+return frontend
+
+}
+
 }

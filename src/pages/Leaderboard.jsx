@@ -55,7 +55,7 @@ navigate(`/profile/${user.id}`,{state:user})
 
 return (
 
-<div className="">
+<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
 
 
 <div className="max-w-6xl mx-auto p-10">
@@ -246,7 +246,7 @@ PRS {user.prs}
 <div className="text-center mt-12">
 
 <button
-onClick={()=>navigate("/dashboard")}
+onClick={()=>navigate("/")}
 className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition"
 >
 Back to Dashboard

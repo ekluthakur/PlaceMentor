@@ -47,7 +47,7 @@ export default function Register() {
             </select>
 
             <button
-                onClick={() => navigate("/dashboard")}
+                onClick={() => navigate("/")}
               className="bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 hover:scale-105 transition"
             >
               Register

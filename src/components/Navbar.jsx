@@ -9,7 +9,7 @@ export default function Navbar() {
       {/* Logo */}
       <div
         className="flex items-center gap-2 cursor-pointer"
-        onClick={()=>navigate("/dashboard")}
+        onClick={()=>navigate("/landing")}
       >
 
       <img

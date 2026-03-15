@@ -1,7 +1,11 @@
 import React, {useEffect, useState} from "react"
 import {useNavigate} from "react-router-dom"
-import GlassCard from "../components/ui/GlassCard"
+import GlassCard from "../components/cards/GlassCard"
 import SectionTitle from "../components/ui/SectionTitle"
+import TrendingQuestions from "../components/TrendingQuestions"
+import JobIntelligence from "../components/JobIntelligence"
+import HiringTracker from "../components/HiringTracker"
+import { getUser } from "../services/userServices"
 
 export default function Dashboard(){
 
@@ -15,7 +19,7 @@ const [prs,setPRS] = useState(0)
 useEffect(()=>{
 
 const savedUser =
-JSON.parse(localStorage.getItem("userProfile")) || {}
+JSON.parse(localStorage.getItem("userProfile") || "{}")
 
 setUser(savedUser)
 
@@ -26,7 +30,7 @@ setPRS(savedUser.prs || 72)
 
 /* AI Suggested Interviews */
 
-const role = user.role || "Frontend Developer"
+const role = user?.role || "Frontend Developer"
 
 const suggestions = {
 
@@ -76,9 +80,32 @@ users:1340
 
 ]
 
+/* Skill Gap Detection */
+
+const skillGap = {
+missing:["System Design","Advanced React","Data Structures"],
+
+courses:[
+{
+skill:"System Design",
+course:"Scalable System Design Fundamentals"
+},
+
+{
+skill:"Advanced React",
+course:"React Performance Optimization"
+},
+
+{
+skill:"Data Structures",
+course:"DSA for Coding Interviews"
+}
+]
+}
+
 return(
 
-<div className="">
+<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
 
 <h1 className="text-3xl font-bold mb-8">
 Welcome {user.name || "User"}
@@ -91,7 +118,10 @@ Welcome {user.name || "User"}
 
 <GlassCard>
 
-<SectionTitle title="Placement Readiness Score"/>
+<SectionTitle
+title="Placement Readiness Score"
+subtitle="Your AI evaluated readiness"
+/>
 
 <div className="text-5xl font-bold text-purple-600 mt-4">
 {prs}
@@ -127,9 +157,82 @@ Your overall placement readiness
 
 </div>
 
+{/* SKILL GAP DETECTION */}
 
+<GlassCard className="mt-6">
+
+<SectionTitle
+title="Skill Gap Detection"
+subtitle="AI detected areas to improve for your target role"
+/>
+
+<div className="grid md:grid-cols-2 gap-6 mt-6">
+
+{/* Missing Skills */}
+
+<div>
+
+<h3 className="font-semibold mb-3 text-red-500">
+Missing Skills
+</h3>
+
+<ul className="space-y-2">
+
+{skillGap.missing.map((skill,i)=>(
+
+<li
+key={i}
+className="bg-red-50 border border-red-200 px-3 py-2 rounded-lg"
+>
+{skill}
+</li>
+
+))}
+
+</ul>
+
+</div>
+
+
+{/* Suggested Courses */}
+
+<div>
+
+<h3 className="font-semibold mb-3 text-green-600">
+Suggested Learning Path
+</h3>
+
+<div className="space-y-3">
+
+{skillGap.courses.map((c,i)=>(
+
+<div
+key={i}
+className="border p-3 rounded-lg hover:shadow cursor-pointer"
+>
+
+<p className="font-semibold">
+{c.skill}
+</p>
+
+<p className="text-sm text-gray-500">
+{c.course}
+</p>
+
+</div>
+
+))}
+
+</div>
+
+</div>
+
+</div>
+
+</GlassCard>
 
 {/* AI RECOMMENDATIONS */}
+<div className="mt-8">
 
 <GlassCard className="mt-6">
 
@@ -158,10 +261,11 @@ Recommended for {role}
 </div>
 
 </GlassCard>
-
+</div>
 
 
 {/* TRENDING INTERVIEWS */}
+<div className="mt-8">
 
 <GlassCard className="">
 
@@ -207,10 +311,19 @@ users practiced
 </div>
 
 </GlassCard>
+</div>
+
+{/* Realtime Global actions */}
+
+<div className="grid md:grid-cols-3 gap-6 mt-10">
+<TrendingQuestions/>
+<JobIntelligence/>
+<HiringTracker/>
+</div>
 
 {/* QUICK ACTIONS */}
 
-<div className="flex gap-4 mt-10">
+<div className="flex fle-wrap gap-4 mt-10">
 
 <button
 onClick={()=>navigate("/interview-setup")}

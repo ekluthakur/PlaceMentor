@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import PostCard from "../components/PostCard"
 import TrendingPosts from "../components/TrendingPosts"
 import TopContributors from "../components/TopContributors"
-import GlassCard from "../components/ui/GlassCard"
+import GlassCard from "../components/cards/GlassCard"
 
 export default function Community(){
 
@@ -122,7 +122,7 @@ const totalLikes = posts.reduce((a,b)=>a+b.likes,0)
 
 return(
 
-<div className="">
+<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
 
 <div className="max-w-7xl mx-auto p-6">
 

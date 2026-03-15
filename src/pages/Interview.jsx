@@ -3,7 +3,7 @@ import Webcam from "react-webcam";
 import { generateQuestions } from "../utils/questionEngine";
 import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
-import GlassCard from "../components/ui/GlassCard"
+import GlassCard from "../components/cards/GlassCard"
 
 export default function Interview() {
 

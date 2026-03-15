@@ -33,7 +33,7 @@ function App() {
         {/* Authenticated Pages */}
         <Route element={<DashboardLayout />}>
 
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/" element={<Dashboard />} />
           <Route path="/interview" element={<Interview />} />
           <Route path="/interview-setup" element={<InterviewSetup />} />
           <Route path="/feedback" element={<Feedback />} />

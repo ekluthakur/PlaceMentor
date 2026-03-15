@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import GlassCard from "../components/ui/GlassCard"
+import GlassCard from "../components/cards/GlassCard"
 import SectionTitle from "../components/ui/SectionTitle"
 
 import {
@@ -39,11 +39,9 @@ Prepare Chart Data
 -------------------------------- */
 
 const chartData = history.map((h,i)=>({
-
 name:`Interview ${i+1}`,
-PRS:h.scores.prs,
-Performance:h.scores.overall
-
+PRS:h?.scores?.prs || 0,
+Performance:h?.scores?.overall || 0
 }))
 
 /* --------------------------------
@@ -61,22 +59,19 @@ const skills = [
 Average PRS
 -------------------------------- */
 
-const avgPRS =
-history.length === 0
-? 0
-: Math.round(
-history.reduce((a,b)=>a+b.scores.prs,0)/history.length
+const avgPRS = history.length === 0 ? 0 : Math.round(
+history.reduce((a,b)=>a + (b?.scores?.prs || 0),0) / history.length
 )
 
 return(
 
-<div className="">
+<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
 
 <h1 className="text-3xl font-bold mb-6">
 Analytics Dashboard
 </h1>
 
-{/* PRS Summary */}
+{/* PRS Summary Card*/}
 
 <div className="grid md:grid-cols-3 gap-6">
 
@@ -112,7 +107,7 @@ Best Score
 
 <p className="text-3xl font-bold text-green-600">
 {history.length
-? Math.max(...history.map(h=>h.scores.prs))
+? Math.max(...history.map(h=>h?.scores?.prs || 0))
 :0}
 </p>
 
@@ -121,9 +116,8 @@ Best Score
 </div>
 
 
-<div className="grid md:grid-cols-2 gap-6 mt-8">
-
 {/* Performance Chart */}
+<div className="mt-8">
 
 <GlassCard className="mt-8">
 
@@ -164,9 +158,10 @@ strokeWidth={3}
 </div>
 
 </GlassCard>
-
+</div>
 
 {/* Skill Progress */}
+<div className="mt-8">
 <GlassCard className="mt-8">
 
 <SectionTitle title="Skill Progress" />
@@ -272,15 +267,15 @@ Interview {i+1}
 </td>
 
 <td className="text-purple-600 font-semibold">
-{h.scores.prs}
+{h?.scores?.prs || 0}
 </td>
 
 <td>
-{h.scores.overall}
+{h?.scores?.overall || 0}
 </td>
 
 <td className="text-gray-500">
-{new Date(h.date).toLocaleDateString()}
+{h?.date ? new Date(h.date).toLocaleDateString() : "-"}
 </td>
 
 </tr>
@@ -299,7 +294,7 @@ Interview {i+1}
 <div className="flex gap-4 mt-10">
 
 <button
-onClick={()=>navigate("/dashboard")}
+onClick={()=>navigate("/")}
 className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
 >
 Dashboard

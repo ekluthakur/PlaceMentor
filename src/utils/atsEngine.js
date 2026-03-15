@@ -17,7 +17,7 @@ setHistory(data)
 
 load()
 
- },[])
+},[])
 
 return(
 

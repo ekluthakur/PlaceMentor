@@ -1,6 +1,6 @@
 import React from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import GlassCard from "../components/ui/GlassCard"
+import GlassCard from "../components/cards/GlassCard"
 import SectionTitle from "../components/ui/SectionTitle"
 
 export default function ResumeAnalyzer(){
@@ -35,7 +35,7 @@ const suggestions = [
 
 return(
 
-<div className="">
+<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
 
 <h1 className="text-3xl font-bold mb-6">
 Resume Analysis
@@ -152,7 +152,7 @@ style={{width:`${atsScore}%`}}
 <div className="flex gap-4 mt-10">
 
 <button
-onClick={()=>navigate("/dashboard")}
+onClick={()=>navigate("/")}
 className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
 >
 Back To Dashboard

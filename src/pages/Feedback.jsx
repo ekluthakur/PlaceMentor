@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import GlassCard from "../components/ui/GlassCard";
+import GlassCard from "../components/cards/GlassCard";
 import SectionTitle from "../components/ui/SectionTitle";
 
 export default function Feedback() {
@@ -184,6 +184,7 @@ UI
 -------------------------------- */
 
 return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-10">
 
 <div className="p-8 space-y-6">
 
@@ -328,7 +329,7 @@ Score
 <div className="flex gap-4 mt-10">
 
 <button
-onClick={()=>navigate("/dashboard")}
+onClick={()=>navigate("/")}
 className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
 >
 Go To Dashboard
@@ -352,6 +353,7 @@ View Analytics
 
 </div>
 
+</div>
 )
 
 }
