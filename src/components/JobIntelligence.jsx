@@ -1,5 +1,11 @@
 import React from "react"
 
+
+useEffect(() => {
+  axios.get("http://localhost:5000/api/jobs/market")
+    .then(res => setJobs(res.data.data))
+}, [])
+
 const jobTrends = [
   { company: "Google", role: "Frontend Engineer", openings: 45 },
   { company: "Amazon", role: "SDE", openings: 120 },

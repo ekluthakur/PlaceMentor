@@ -1,5 +1,15 @@
 import React from "react"
-import { trendingQuestions } from "../data/trendingQuestions"
+import { useEffect, useState } from "react"
+import axios from "axios"
+
+
+const [questions, setQuestions] = useState([])
+
+useEffect(() => {
+  axios.get("http://localhost:5000/api/interview/questions")
+    .then(res => setQuestions(res.data))
+    .catch(err => console.error(err))
+}, [])
 
 export default function TrendingQuestions(){
 

@@ -9,7 +9,7 @@ export default function Navbar() {
       {/* Logo */}
       <div
         className="flex items-center gap-2 cursor-pointer"
-        onClick={()=>navigate("/landing")}
+        onClick={()=>navigate("/")}
       >
 
       <img
@@ -21,6 +21,7 @@ export default function Navbar() {
       <span className="text-xl font-bold text-purple-600">
         PlaceMentor
       </span>
+
 
       </div>
 

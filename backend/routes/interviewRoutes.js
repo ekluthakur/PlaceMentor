@@ -1,9 +1,8 @@
 import express from "express"
-import {saveInterview} from "../controllers/interviewController.js"
-import protect from "../middleware/authMiddleware.js"
+import { getQuestions } from "../controllers/interviewController.js"
 
 const router = express.Router()
 
-router.post("/",protect,saveInterview)
+router.get("/questions", getQuestions)
 
 export default router

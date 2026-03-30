@@ -1,6 +1,6 @@
 import React from "react";
 import Webcam from "react-webcam";
-import { generateQuestions } from "../utils/questionEngine";
+import { fetchQuestions } from "../utils/questionEngine";
 import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import GlassCard from "../components/cards/GlassCard"
@@ -11,13 +11,11 @@ export default function Interview() {
 
   const videoRef = useRef(null)
 
-  const questions = [
-    "Tell me about yourself",
-    "Explain the Virtual DOM in React",
-    "Difference between let, var and const",
-    "How does useEffect work?",
-    "Explain async/await in JavaScript"
-  ]
+  const [questions, setQuestions] = useState([])
+
+  useEffect(() => {
+  fetchQuestions().then(data => setQuestions(data))
+  }, [])
 
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [time, setTime] = useState(0)
@@ -45,15 +43,15 @@ export default function Interview() {
 
   }, [])
 
-  useEffect(() => {
-
-    speakQuestion(questions[currentQuestion])
-
-  }, [currentQuestion])
+useEffect(() => {
+  if (questions.length > 0) {
+    speakQuestion(questions[currentQuestion]?.title)
+  }
+}, [currentQuestion, questions])
 
   const nextQuestion = () => {
 
-    if (currentQuestion < questions.length - 1) {
+    if (questions.length > 0 && currentQuestion < questions.length - 1) {
 
       setCurrentQuestion(currentQuestion + 1)
       setAnswer("")
@@ -81,7 +79,6 @@ export default function Interview() {
 
     recognition.continuous = true
     recognition.lang = "en-US"
-    recognition.lang = "hi-IN"
 
     recognition.onresult = (event) => {
 
@@ -193,7 +190,9 @@ export default function Interview() {
 
           <p className="text-gray-700 text-lg">
 
-            {questions[currentQuestion]}
+            {questions.length > 0 
+            ? questions[currentQuestion]?.title
+            : "Loading question..."}
 
           </p>
 
