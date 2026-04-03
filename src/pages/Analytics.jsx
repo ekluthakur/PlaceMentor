@@ -125,7 +125,7 @@ Best Score
 
 <div className="mt-6 h-64">
 
-<ResponsiveContainer width="100%" height="100%">
+<ResponsiveContainer width="100%" height={280}>
 
 <LineChart data={chartData}>
 
@@ -206,7 +206,7 @@ style={{width:`${s.progress}%`}}
 
 <div className="mt-6 h-64">
 
-<ResponsiveContainer width="100%" height="100%">
+<ResponsiveContainer width="100%" height={280}>
 
 <BarChart data={chartData}>
 

@@ -2,23 +2,27 @@ import mongoose from "mongoose"
 
 const interviewSchema = new mongoose.Schema({
 
-  user:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"User"
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
   },
 
-  interviewScore:Number,
-  skillMatch:Number,
-  resumeScore:Number,
-  marketDemand:Number,
+  question: String,
+  answer: String,
+  feedback: String,
 
-  prs:Number,
+  interviewScore: Number,
+  skillMatch: Number,
+  resumeScore: Number,
+  marketDemand: Number,
 
-  createdAt:{
-    type:Date,
-    default:Date.now
+  prs: Number,
+
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
 
 })
 
-export default mongoose.model("Interview",interviewSchema)
+export default mongoose.model("Interview", interviewSchema)

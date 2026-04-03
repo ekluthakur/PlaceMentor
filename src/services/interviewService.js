@@ -22,10 +22,23 @@ return res.data
 
 /* Get interview history */
 
-export const getInterviewHistory = async()=>{
+export const getInterviewHistory = async () => {
+    try {
+  const res = await fetch("http://localhost:5000/api/interview/my", {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`
+    }
+  })
+    const data = await res.json()
 
-const res = await API.get("/interview/history")
+        if (!res.ok) {
+      throw new Error(data.message)
+    }
 
-return res.data
+    return data
 
+  } catch (err) {
+    console.error("History fetch error:", err)
+    return []
+  }
 }

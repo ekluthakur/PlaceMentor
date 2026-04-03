@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import GlassCard from "../components/cards/GlassCard"
 import SectionTitle from "../components/ui/SectionTitle"
@@ -8,23 +8,18 @@ export default function ResumeAnalyzer(){
 const location = useLocation()
 const navigate = useNavigate()
 
-const data = location.state || {}
+/* ---------------- STATES ---------------- */
 
-const resumeScore = 78
-const atsScore = 82
+const [text,setText] = useState("")
+const [skills,setSkills] = useState([])
+const [resumeScore,setResumeScore] = useState(0)
+const [atsScore,setATSScore] = useState(0)
 
-const skills = [
-"React",
-"JavaScript",
-"Node.js",
-"MongoDB"
-]
+/* ---------------- DEFAULT FALLBACK ---------------- */
 
-const missingSkills = [
-"System Design",
-"Redis",
-"Testing"
-]
+const defaultSkills = ["React","JavaScript","Node.js"]
+
+const requiredSkills = ["React","Node.js","MongoDB","DSA"]
 
 const suggestions = [
 "Add measurable achievements",
@@ -32,6 +27,69 @@ const suggestions = [
 "Include system design experience",
 "Add GitHub links"
 ]
+
+/* ---------------- AI + LOGIC ---------------- */
+
+const analyzeResume = async ()=>{
+
+if(!text || text.length < 50){
+alert("Please paste a valid resume")
+return
+}
+
+try{
+
+const res = await fetch("http://localhost:5000/api/ai/skills",{
+method:"POST",
+headers:{ "Content-Type":"application/json" },
+body: JSON.stringify({ resumeText:text })
+})
+
+const data = await res.json()
+
+/* ✅ NORMALIZE SKILLS (IMPORTANT FIX) */
+const extractedSkills = (data.skills || []).map(s =>
+s.toLowerCase()
+)
+
+setSkills(extractedSkills)
+
+/* ✅ REQUIRED SKILLS LOWERCASE */
+const required = ["react","node.js","mongodb","dsa"]
+
+/* ✅ ATS SCORE FIX */
+const matched = required.filter(skill =>
+extractedSkills.includes(skill)
+)
+
+const ats = Math.round((matched.length / required.length) * 100)
+setATSScore(ats)
+
+/* ✅ RESUME SCORE FIX */
+let score = 40
+
+if(text.length > 300) score += 20
+if(text.toLowerCase().includes("project")) score += 10
+if(text.toLowerCase().includes("experience")) score += 10
+if(extractedSkills.length > 3) score += 20
+
+setResumeScore(Math.min(score,100))
+
+}catch(err){
+console.log(err)
+
+/* fallback (IMPORTANT) */
+
+}
+}
+
+/* ---------------- SKILL GAP ---------------- */
+
+const missingSkills = ["react","node.js","mongodb","dsa"].filter(
+skill => !skills.includes(skill)
+)
+
+/* ---------------- UI (UNCHANGED) ---------------- */
 
 return(
 
@@ -41,9 +99,10 @@ return(
 Resume Analysis
 </h1>
 
-{/* Score Cards */}
 
-<div className="grid md:grid-cols-2 gap-6">
+{/* SCORE CARDS */}
+
+<div className="grid md:grid-cols-2 gap-6 mt-6">
 
 <GlassCard>
 
@@ -89,7 +148,7 @@ style={{width:`${atsScore}%`}}
 
 </div>
 
-{/* Skills */}
+{/* SKILLS */}
 
 <div className="grid md:grid-cols-2 gap-6 mt-8">
 
@@ -99,7 +158,7 @@ style={{width:`${atsScore}%`}}
 
 <ul className="mt-4 space-y-2">
 
-{skills.map((s,i)=>(
+{(skills.length ? skills : defaultSkills).map((s,i)=>(
 <li key={i} className="text-green-700">
 ✓ {s}
 </li>
@@ -127,7 +186,7 @@ style={{width:`${atsScore}%`}}
 
 </div>
 
-{/* Suggestions */}
+{/* SUGGESTIONS */}
 <div className="mt-4 w-full bg-gray-200 rounded-full h-3">
 <GlassCard className="mt-8">
 
@@ -146,8 +205,7 @@ style={{width:`${atsScore}%`}}
 </GlassCard>
 
 
-{/* Buttons */}
-
+{/* BUTTONS */}
 
 <div className="flex gap-4 mt-10">
 

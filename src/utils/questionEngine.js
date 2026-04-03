@@ -1,12 +1,13 @@
-import axios from "axios"
-
 export const fetchQuestions = async () => {
-  try {
-    const res = await axios.get("http://localhost:5000/api/interview/questions")
-    console.log("API RESPONSE:", res.data)
-    return res.data
-  } catch (error) {
-    console.error("ERROR FETCHING QUESTIONS:", error)
-    return []
-  }
+  const res = await fetch("http://localhost:5000/api/interview/questions")
+  const data = await res.json()
+
+  console.log("API RESPONSE:", data)
+
+  // ✅ FORMAT DATA FOR UI
+  return data.map((q) => ({
+    question: q.title,
+    company: "Tech Company",
+    role: "Developer"
+  }))
 }

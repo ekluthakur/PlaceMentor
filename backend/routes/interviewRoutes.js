@@ -1,25 +1,46 @@
 import express from "express"
+import { getQuestions, saveInterview, getMyInterviews } from "../controllers/interviewController.js"
+import protect from "../middleware/authMiddleware.js"
+import bcrypt from "bcryptjs"
+import jwt from "jsonwebtoken"
+import User from "../models/User.js"
 
 const router = express.Router()
 
-router.get("/questions", (req, res) => {
-  res.json([
-    {
-      company: "Google",
-      role: "Frontend Developer",
-      question: "Explain Virtual DOM"
-    },
-    {
-      company: "Amazon",
-      role: "SDE",
-      question: "What is system design?"
-    },
-    {
-      company: "Microsoft",
-      role: "Backend Developer",
-      question: "What is REST API?"
-    }
-  ])
+// REGISTER
+router.post("/register", async (req,res)=>{
+  const {name,email,password} = req.body
+
+  const hashed = await bcrypt.hash(password,10)
+
+  const user = await User.create({
+    name,
+    email,
+    password: hashed
+  })
+
+  res.json(user)
 })
+
+// LOGIN
+router.post("/login", async (req,res)=>{
+  const {email,password} = req.body
+
+  const user = await User.findOne({email})
+
+  if(!user) return res.status(400).json({msg:"User not found"})
+
+  const match = await bcrypt.compare(password,user.password)
+
+  if(!match) return res.status(400).json({msg:"Wrong password"})
+
+  const token = jwt.sign({id:user._id},process.env.JWT_SECRET)
+
+  res.json({token,user})
+})
+
+router.get("/questions", getQuestions)
+router.post("/save", protect, saveInterview)
+router.get("/my", protect, getMyInterviews)
 
 export default router

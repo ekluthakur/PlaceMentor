@@ -3,10 +3,20 @@ import Webcam from "react-webcam"
 import { fetchQuestions } from "../utils/questionEngine"
 import { useNavigate } from "react-router-dom"
 import GlassCard from "../components/cards/GlassCard"
+import {useLocation } from "react-router-dom"
 
 export default function Interview() {
 
   const navigate = useNavigate()
+  const location = useLocation()
+
+  const setup = location.state || {
+  role: "Developer",
+  company: "Company",
+  difficulty: "Medium",
+  questions: 5
+}
+
   const videoRef = useRef(null)
 
   const [questions, setQuestions] = useState([])
@@ -15,14 +25,34 @@ export default function Interview() {
   const [recording, setRecording] = useState(false)
   const [answer, setAnswer] = useState("")
   const [listening, setListening] = useState(false)
-
+  const [aiSpeaking, setAISpeaking] = useState(false)
   // ✅ FETCH QUESTIONS FROM API
-  useEffect(() => {
-    fetchQuestions().then(data => {
-      console.log("QUESTIONS:", data)
-      setQuestions(data)
-    })
-  }, [])
+useEffect(() => {
+  fetchQuestions().then(data => {
+    console.log("QUESTIONS:", data)
+
+    let filtered = data
+
+    // ✅ APPLY FILTER ONLY IF score EXISTS
+    if (data[0]?.score !== undefined) {
+      filtered = data.filter(q => {
+        if (setup.difficulty === "Easy") return q.score < 5
+        if (setup.difficulty === "Medium") return q.score >= 5 && q.score < 15
+        return q.score >= 15
+      })
+    }
+
+    // ✅ FALLBACK
+    if (filtered.length === 0) {
+      filtered = data
+    }
+
+    const shuffled = filtered.sort(() => 0.5 - Math.random())
+    const selected = shuffled.slice(0, setup.questions)
+
+    setQuestions(selected)
+  })
+}, [])
 
   // ✅ CAMERA ACCESS
   useEffect(() => {
@@ -47,31 +77,68 @@ export default function Interview() {
     return () => clearInterval(timer)
   }, [])
 
-  // ✅ SPEAK QUESTION
-  useEffect(() => {
-    if (questions.length > 0) {
-      speakQuestion(questions[currentQuestion]?.question)
-    }
-  }, [currentQuestion, questions])
-
+  // ✅ AI SPEAK FUNCTION
   const speakQuestion = (question) => {
     if (!question) return
+
     const speech = new SpeechSynthesisUtterance(question)
     speech.lang = "en-US"
+    speech.rate = 0.9
+
+    speech.onstart = () => setAiSpeaking(true)
+    speech.onend = () => setAiSpeaking(false)
+
+    const voices = window.speechSynthesis.getVoices()
+    const femaleVoice = voices.find(v => v.name.includes("Female"))
+
+    if (femaleVoice) speech.voice = femaleVoice
+
     window.speechSynthesis.speak(speech)
   }
 
+  // ✅ INTRO + QUESTION SPEAK
+  useEffect(() => {
+    if (questions.length > 0) {
+
+      const intro = new SpeechSynthesisUtterance(
+        `Hello, I am your interviewer from ${setup.company}. Let's begin.`
+      )
+
+      window.speechSynthesis.speak(intro)
+
+      setTimeout(() => {
+        speakQuestion(questions[currentQuestion]?.question)
+      }, 1500)
+    }
+  }, [questions])
+
+  //Next Question
    const nextQuestion = async () => {
+      // ❌ PREVENT EMPTY SUBMIT
+  if (!questions.length) {
+    alert("Questions not loaded yet")
+    return
+  }
+
+  if (!answer.trim()) {
+    alert("Please write or speak your answer first")
+    return
+  }
 
   await submitAnswer()   // ✅ SAVE ANSWER FIRST
 
   if (questions.length > 0 && currentQuestion < questions.length - 1) {
     setCurrentQuestion(currentQuestion + 1)
     setAnswer("")
+
+    setTimeout(() => {
+      speakQuestion(questions[currentQuestion + 1]?.question)
+    },800)
   } else {
     finishInterview()
   }
 }
+
 
   const finishInterview = () => {
     navigate("/feedback")
@@ -102,28 +169,39 @@ export default function Interview() {
     setListening(true)
   }
 
-    const submitAnswer = async () => {
+  // Save Answer
+const submitAnswer = async () => {
   try {
     const current = questions[currentQuestion]
 
-    await fetch("http://localhost:5000/api/answers/save", {
+    const res = await fetch("http://localhost:5000/api/interview/save", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`
       },
       body: JSON.stringify({
-        question: current.question,
-        company: current.company,
-        role: current.role,
-        answer: answer
+        question: current?.question || "",
+        answer: answer,
+        feedback: "", // can improve later
+
+        company: setup.company,
+        role: setup.role,
+        difficulty: setup.difficulty,
+
+        // simple demo scoring (you can upgrade later)
+        score: overallScore,
+        prs: prsScore
       })
     })
 
-      if (res.ok) {
-        console.log("✅ Answer saved!")
-      } else {
-         console.error("❌ Failed to save answer")
-      }
+    const data = await res.json()
+
+    if (res.ok) {
+      console.log("✅ Answer saved!", data)
+    } else {
+      console.error("❌ Failed:", data.message)
+    }
 
   } catch (error) {
     console.error("Error saving answer:", error)
@@ -148,14 +226,20 @@ export default function Interview() {
 
           <div className="flex flex-col items-center justify-center h-64">
             <img
-              src="https://api.dicebear.com/7.x/bottts/svg?seed=mentor"
+              src={`https://api.dicebear.com/7.x/bottts/svg?seed=${setup.company}`}
               alt="AI Interviewer"
-              className="w-32 h-32"
+              className={'w-32 h-32 ' + (aiSpeaking ? 'animate-pulse' : '')}
             />
 
-            <p className="mt-3 text-gray-600">
-              Asking: {questions[currentQuestion]?.question || "Loading..."}
+            <p className="mt-3 text-gray-600 text-center">
+              {questions[currentQuestion]?.question || "Loading..."}
             </p>
+
+            {aiSpeaking && (
+              <p className="text-blue-500 mt-2 animate-pulse">
+                🤖 AI is speaking...
+              </p>
+            )}
           </div>
         </GlassCard>
 
@@ -195,14 +279,12 @@ export default function Interview() {
 
       {/* QUESTION PANEL */}
       <GlassCard>
-        <h2 className="text-lg font-semibold mb-3">
-          Interview Question
-        </h2>
+
 
         {questions && questions.length > 0 ? (
           <>
             <p className="font-semibold">
-                {questions[currentQuestion]?.company} — {questions[currentQuestion]?.role}
+               {setup.company} - {setup.role}
             </p>
 
             <p className="text-gray-700 text-lg mt-2">
@@ -216,9 +298,7 @@ export default function Interview() {
 
       {/* ANSWER PANEL */}
       <GlassCard>
-        <h2 className="text-lg font-semibold mb-3">
-          Your Answer
-        </h2>
+
 
         <textarea
           rows="5"
@@ -228,18 +308,7 @@ export default function Interview() {
           placeholder="Explain your answer clearly..."
         />
 
-        <div className="mt-4">
-          <p className="text-sm text-gray-600 mb-1">
-            Answer Quality
-          </p>
 
-          <div className="w-full bg-gray-200 rounded-full h-3">
-            <div
-              className="bg-green-500 h-3 rounded-full"
-              style={{ width: `${Math.min(answer.length * 2, 100)}%` }}
-            />
-          </div>
-        </div>
 
         <button
           onClick={startListening}

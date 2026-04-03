@@ -27,7 +27,14 @@ export default function InterviewSetup() {
   const difficulties = ["Easy","Medium","Hard"]
 
   const startInterview = () => {
-    navigate("/interview")
+    navigate("/interview", {
+      state:{
+        role,
+        company,
+        difficulty,
+        questions
+      }
+    })
   }
 
   const interviewDuration = questions * 3
@@ -130,7 +137,7 @@ export default function InterviewSetup() {
               min="3"
               max="10"
               value={questions}
-              onChange={(e)=>setQuestions(e.target.value)}
+              onChange={(e)=>setQuestions(Number(e.target.value))}
               className="w-full mt-4"
             />
 

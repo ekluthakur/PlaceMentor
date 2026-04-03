@@ -23,7 +23,7 @@ export default function NavbarUser() {
         className="h-12 w-auto object-contain"
       />
 
-      <span className="text-xl font-bold text-purple-600">
+      <span className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent ">
         PlaceMentor
       </span>
 

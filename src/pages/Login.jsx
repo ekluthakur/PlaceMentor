@@ -1,10 +1,51 @@
-import React from "react";
-import Navbar from "../components/Navbar";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react"
+import Navbar from "../components/Navbar"
+import { useNavigate } from "react-router-dom"
 
 export default function Login() {
-   const navigate = useNavigate();
+
+  const navigate = useNavigate()
+
+  const [form, setForm] = useState({
+    email: "",
+    password: ""
+  })
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value })
+  }
+
+const handleSubmit = async (e) => {
+  e.preventDefault()
+
+  console.log("Sending:", form)
+
+  if (!form.email || !form.password) {
+    alert("⚠️ Please fill all fields")
+    return
+  }
+
+  const res = await fetch("http://localhost:5000/api/auth/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+  email: form.email.trim().toLowerCase(),
+  password: form.password.trim()
+})
+  })
+
+  const data = await res.json()
+
+  if (res.ok) {
+    localStorage.setItem("token", data.token)
+    navigate("/profile")
+  } else {
+    alert("❌ " + data.message)
+  }
+}
+
   return (
     <div>
       <Navbar />
@@ -17,38 +58,21 @@ export default function Login() {
             Login to PlaceMentor
           </h2>
 
-          <form className="flex flex-col gap-4">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
-            <input
-              type="email"
-              placeholder="Email"
-              className="border p-3 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <input name="email" type="email" required placeholder="Email" onChange={handleChange} className="border p-3 rounded-lg" />
 
-            <input
-              type="password"
-              placeholder="Password"
-              className="border p-3 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <input name="password" type="password" required placeholder="Password" onChange={handleChange} className="border p-3 rounded-lg" />
 
-            <button
-                onClick={() => navigate("/")}
-                className="bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 hover:scale-105 transition">
+            <button type="submit" className="bg-blue-600 text-white py-3 rounded-lg">
               Login
             </button>
 
           </form>
 
-          <p className="text-center text-sm mt-4">
-            Don't have an account?{" "}
-            <Link to="/register" className="text-blue-600 font-medium">
-              Register
-            </Link>
-          </p>
-
         </div>
 
       </div>
     </div>
-  );
+  )
 }

@@ -6,13 +6,27 @@ import TrendingQuestions from "../components/TrendingQuestions"
 import JobIntelligence from "../components/JobIntelligence"
 import HiringTracker from "../components/HiringTracker"
 import { getUser } from "../services/userServices"
+import { getInterviewHistory } from "../services/interviewService";
 
 export default function Dashboard(){
 
 const navigate = useNavigate()
+const [history, setHistory] = useState([])
 
 const [user,setUser] = useState({})
 const [prs,setPRS] = useState(0)
+
+useEffect(() => {
+  async function load() {
+    const data = await getInterviewHistory()
+    setHistory(data)
+
+    if (data.length > 0) {
+        setUser(data[0].prs || 0)
+    }
+  }
+  load()
+}, [])
 
 /* Load user */
 
@@ -23,7 +37,19 @@ JSON.parse(localStorage.getItem("userProfile") || "{}")
 
 setUser(savedUser)
 
-setPRS(savedUser.prs || 72)
+
+
+},[])
+
+useEffect(()=>{
+
+const history =
+JSON.parse(localStorage.getItem("interviewHistory")) || []
+
+if(history.length > 0){
+const latest = history[history.length - 1]
+setPRS(latest.scores?.prs || 0)
+}
 
 },[])
 
@@ -139,7 +165,7 @@ Your overall placement readiness
 <SectionTitle title="Interviews Completed"/>
 
 <div className="text-5xl font-bold text-blue-600 mt-4">
-{user.interviews || 12}
+{history.length}
 </div>
 
 </GlassCard>

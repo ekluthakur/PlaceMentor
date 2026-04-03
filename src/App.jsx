@@ -20,6 +20,7 @@ import InterviewHistory from "./pages/InterviewHistory"
 
 import DashboardLayout from "./layouts/DashboardLayout"
 import Profile from "./pages/Profile";
+import ProtectedRoute from "./components/ProtectedRoute"
 
 function App() {
   return (
@@ -46,6 +47,11 @@ function App() {
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/profile-analytics" element={<ProfileAnalytics/>}/>
           <Route path="/interview-history" element={<InterviewHistory/>}/>
+          <Route path="/profile" element={
+  <ProtectedRoute>
+    <Profile />
+  </ProtectedRoute>
+} />
 
         </Route>
 

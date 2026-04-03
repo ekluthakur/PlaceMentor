@@ -1,70 +1,87 @@
-import React from "react";
-import Navbar from "../components/Navbar";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react"
+import Navbar from "../components/Navbar"
+import { useNavigate } from "react-router-dom"
 
 export default function Register() {
-    const navigate = useNavigate();
+  const navigate = useNavigate()
+
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: ""
+  })
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value })
+  }
+
+const handleSubmit = async (e) => {
+  e.preventDefault()
+
+  // ✅ VALIDATION
+  if (!form.name || !form.email || !form.password || !form.role) {
+    alert("⚠️ All fields are required")
+    return
+  }
+
+  if (form.password.length < 6) {
+    alert("⚠️ Password must be at least 6 characters")
+    return
+  }
+
+  const res = await fetch("http://localhost:5000/api/auth/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(form)
+  })
+
+  const data = await res.json()
+
+  if (res.ok) {
+    alert("✅ Registered successfully")
+    navigate("/login")
+  } else {
+    alert("❌ " + data.message)
+  }
+}
+
   return (
     <div>
       <Navbar />
 
       <div className="flex justify-center items-center min-h-screen bg-gray-50">
-
         <div className="bg-white shadow-xl rounded-xl p-8 w-[400px]">
 
           <h2 className="text-2xl font-bold text-center mb-6">
             Create Account
           </h2>
 
-          <form className="flex flex-col gap-4">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
-            <input
-              type="text"
-              placeholder="Full Name"
-              className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <input name="name" required placeholder="Full Name" onChange={handleChange} className="border p-3 rounded-lg" />
 
-            <input
-              type="email"
-              placeholder="Email"
-              className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <input name="email" type="email" required placeholder="Email" onChange={handleChange} className="border p-3 rounded-lg" />
 
-            <input
-              type="password"
-              placeholder="Password"
-              className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <input name="password" type="password" required placeholder="Password" onChange={handleChange} className="border p-3 rounded-lg" />
 
-            <select
-              className="border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option>Select Target Role</option>
+            <select name="role" required onChange={handleChange} className="border p-3 rounded-lg">
+              <option value="">Select Role</option>
               <option>Software Developer</option>
               <option>Frontend Developer</option>
-              <option>Data Analyst</option>
               <option>Backend Developer</option>
             </select>
 
-            <button
-                onClick={() => navigate("/")}
-              className="bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 hover:scale-105 transition"
-            >
+            <button type="submit" className="bg-blue-600 text-white py-3 rounded-lg">
               Register
             </button>
 
           </form>
 
-          <p className="text-center text-sm mt-4">
-            Already have an account?{" "}
-            <a href="/login" className="text-blue-600 font-medium">
-              Login
-            </a>
-          </p>
-
         </div>
-
       </div>
     </div>
-  );
+  )
 }
