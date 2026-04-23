@@ -22,7 +22,7 @@ useEffect(() => {
     setHistory(data)
 
     if (data.length > 0) {
-        setUser(data[0].prs || 0)
+        setPRS(data[0].prs || 0)
     }
   }
   load()
@@ -41,17 +41,16 @@ setUser(savedUser)
 
 },[])
 
-useEffect(()=>{
+useEffect(() => {
+  const history =
+    JSON.parse(localStorage.getItem("interviewHistory")) || []
 
-const history =
-JSON.parse(localStorage.getItem("interviewHistory")) || []
+  setHistory(history)
 
-if(history.length > 0){
-const latest = history[history.length - 1]
-setPRS(latest.scores?.prs || 0)
-}
-
-},[])
+  if (history.length > 0) {
+    setPRS(history[0].prs)
+  }
+}, [])
 
 
 /* AI Suggested Interviews */

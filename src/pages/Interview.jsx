@@ -85,8 +85,8 @@ useEffect(() => {
     speech.lang = "en-US"
     speech.rate = 0.9
 
-    speech.onstart = () => setAiSpeaking(true)
-    speech.onend = () => setAiSpeaking(false)
+    speech.onstart = () => setAISpeaking(true)
+    speech.onend = () => setAISpeaking(false)
 
     const voices = window.speechSynthesis.getVoices()
     const femaleVoice = voices.find(v => v.name.includes("Female"))

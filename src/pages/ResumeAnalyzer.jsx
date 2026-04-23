@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import GlassCard from "../components/cards/GlassCard"
 import SectionTitle from "../components/ui/SectionTitle"
@@ -77,9 +77,7 @@ setResumeScore(Math.min(score,100))
 
 }catch(err){
 console.log(err)
-
-/* fallback (IMPORTANT) */
-
+alert("Failed to analyze resume")
 }
 }
 
@@ -88,6 +86,21 @@ console.log(err)
 const missingSkills = ["react","node.js","mongodb","dsa"].filter(
 skill => !skills.includes(skill)
 )
+
+useEffect(() => {
+  const stored = JSON.parse(localStorage.getItem("resumeData"))
+
+  if (stored) {
+    setResumeScore(stored.resumeScore || 70)
+    setATSScore(stored.atsScore || 75)
+    setSkills(stored.skills || ["React", "JavaScript"])
+  }
+  localStorage.setItem("resumeData", JSON.stringify({
+  resumeScore: Math.min(resumeScore,100),
+  atsScore: atsScore,
+  skills: skills
+}))
+}, [])
 
 /* ---------------- UI (UNCHANGED) ---------------- */
 

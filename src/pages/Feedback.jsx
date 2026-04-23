@@ -100,27 +100,24 @@ loadAI()
 
 /* ---------------- SAVE RESULT ---------------- */
 
-useEffect(()=>{
+useEffect(() => {
+  const result = {
+    id: Date.now(),
+    name: JSON.parse(localStorage.getItem("userProfile"))?.name || "User",
+    company: data.company || "Practice",
+    role: data.role || "Mock Interview",
+    prs: prsScore,
+    score: overallScore,
+    date: new Date().toLocaleDateString()
+  }
 
-const result = {
-company: data.company || "Practice",
-role: data.role || "Mock Interview",
-prs: prsScore,
-score: overallScore,
-date: new Date().toLocaleDateString()
-}
+  const history =
+    JSON.parse(localStorage.getItem("interviewHistory")) || []
 
-const history =
-JSON.parse(localStorage.getItem("interviewHistory")) || []
+  history.unshift(result)
 
-history.unshift(result)
-
-localStorage.setItem(
-"interviewHistory",
-JSON.stringify(history)
-)
-
-},[])
+  localStorage.setItem("interviewHistory", JSON.stringify(history))
+}, [])
 
 
 return (

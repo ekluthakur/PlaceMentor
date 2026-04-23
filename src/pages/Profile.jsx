@@ -94,6 +94,16 @@ const saveProfile = async () => {
   } catch (err) {
     console.log(err)
     alert("❌ Server error")
+    const local = JSON.parse(localStorage.getItem("userProfile") || "{}")
+
+setUser({
+  name: local.name || "Demo User",
+  email: local.email || "demo@gmail.com",
+  role: local.role || "Frontend Developer",
+  bio: local.bio || "",
+  photo: local.photo || "",
+  prs: local.prs || 0
+})
   }
 }
 
