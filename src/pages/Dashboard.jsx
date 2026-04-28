@@ -15,18 +15,12 @@ const [history, setHistory] = useState([])
 
 const [user,setUser] = useState({})
 const [prs,setPRS] = useState(0)
+const [resumeData,setResumeData] = useState({})
 
-useEffect(() => {
-  async function load() {
-    const data = await getInterviewHistory()
-    setHistory(data)
-
-    if (data.length > 0) {
-        setPRS(data[0].prs || 0)
-    }
-  }
-  load()
-}, [])
+useEffect(()=>{
+  const data = JSON.parse(localStorage.getItem("resumeData")) || {}
+  setResumeData(data)
+},[])
 
 /* Load user */
 
@@ -37,21 +31,25 @@ JSON.parse(localStorage.getItem("userProfile") || "{}")
 
 setUser(savedUser)
 
-
-
 },[])
 
 useEffect(() => {
-  const history =
-    JSON.parse(localStorage.getItem("interviewHistory")) || []
 
-  setHistory(history)
+const resumeData = JSON.parse(localStorage.getItem("resumeData")) || {}
+const storedPRS = localStorage.getItem("prs")
 
-  if (history.length > 0) {
-    setPRS(history[0].prs)
-  }
+setResumeData(resumeData)
+
+if(storedPRS){
+  setPRS(Number(storedPRS))
+}
+
+const history =
+  JSON.parse(localStorage.getItem("interviewHistory")) || []
+
+setHistory(history)
+
 }, [])
-
 
 /* AI Suggested Interviews */
 
@@ -175,7 +173,7 @@ Your overall placement readiness
 <SectionTitle title="Resume Score"/>
 
 <div className="text-5xl font-bold text-green-600 mt-4">
-{user.resumeScore || 78}
+{resumeData.resumeScore || 0}
 </div>
 
 </GlassCard>

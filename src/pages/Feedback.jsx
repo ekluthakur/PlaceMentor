@@ -111,6 +111,17 @@ useEffect(() => {
     date: new Date().toLocaleDateString()
   }
 
+  const interviewScore = prsScore
+
+  const oldPRS = Number(localStorage.getItem("prs")) || 0
+
+  const newPRS = Math.round(
+     oldPRS * 0.6 +
+    interviewScore * 0.4
+  )
+
+  localStorage.setItem("prs", newPRS)
+
   const history =
     JSON.parse(localStorage.getItem("interviewHistory")) || []
 

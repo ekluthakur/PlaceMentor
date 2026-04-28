@@ -58,21 +58,27 @@ model:"deepseek/deepseek-chat-v3",
 messages:[
 {
 role:"user",
-content:`
-Evaluate this answer.
+content: `
+You are a strict technical interviewer.
 
-Question:
-${question}
+Evaluate the answer properly.
 
-Answer:
-${answer}
+Rules:
+- If answer is irrelevant → score = 0-3
+- If partially correct → score = 4-6
+- If good → score = 7-8
+- If excellent → score = 9-10
 
-Return JSON:
+Return ONLY valid JSON:
+
 {
-"score": number (0-10),
-"feedback": "short feedback",
-"improvement": "better answer"
+"score": number,
+"feedback": "1-2 line real feedback",
+"improvement": "better corrected answer"
 }
+
+Question: ${question}
+Answer: ${answer}
 `
 }
 ]
@@ -139,16 +145,30 @@ headers:{
 )
 
 let text = response.data.choices[0].message.content
-text = text.replace(/```json|```/g,"")
 
+// CLEAN
+text = text.replace(/```json|```/g,"").trim()
 
 let skills = []
 
 try {
-  skills = JSON.parse(text)
-} catch {
-  console.log("JSON PARSE ERROR:", text)
-  skills = []
+
+// try direct parse
+skills = JSON.parse(text)
+
+}catch{
+
+// 🔥 fallback (extract array manually)
+const match = text.match(/\[.*\]/)
+
+if(match){
+  try{
+    skills = JSON.parse(match[0])
+  }catch{
+    skills = []
+  }
+}
+
 }
 
 res.json({ skills })

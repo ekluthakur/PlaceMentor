@@ -25,7 +25,7 @@ export default function DashboardLayout() {
 
       {/* Page Content */}
 
-      <div className="p-10 relative z-10">
+      <div className="p-10 relative ">
 
         <Outlet />
 

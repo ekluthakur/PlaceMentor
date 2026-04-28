@@ -53,14 +53,14 @@ export default function AIMentorChatbot() {
 
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-110 z-50"
+        className="fixed bottom-6 right-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-110 z-[9999]"
       >
         🤖
       </button>
 
       {open && (
 
-        <div className="fixed bottom-20 right-6 w-80 bg-white rounded-xl shadow-xl flex flex-col">
+        <div className="fixed bottom-20 right-6 w-80 bg-white rounded-xl shadow-xl flex flex-col z-[9999]">
 
           <div className="bg-blue-600 text-white p-3 rounded-t-xl">
             AI Mentor

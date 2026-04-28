@@ -100,6 +100,28 @@ useEffect(() => {
 
 }, [])
 
+useEffect(() => {
+
+localStorage.setItem("resumeData", JSON.stringify({
+  resumeScore,
+  atsScore,
+  skills
+}))
+
+}, [resumeScore, atsScore, skills])
+
+useEffect(() => {
+
+const prs = Math.round(
+  resumeScore * 0.4 +
+  atsScore * 0.2 +
+  60 * 0.4   // temporary interview score
+)
+
+localStorage.setItem("prs", prs)
+
+}, [resumeScore, atsScore])
+
 /* ---------------- UI (UNCHANGED) ---------------- */
 
 return(
