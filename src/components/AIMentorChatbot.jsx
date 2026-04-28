@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react"
+import React, { useState, useEffect, useRef } from "react"
 
 export default function AIMentorChatbot() {
 
@@ -7,42 +6,78 @@ export default function AIMentorChatbot() {
   const [messages, setMessages] = useState([
     { role: "ai", text: "Hi 👋 I'm your AI Mentor. Ask me about interviews, resumes, or skills!" }
   ])
-
   const [input, setInput] = useState("")
+  const [loading, setLoading] = useState(false)
 
-  const sendMessage = () => {
+  const chatRef = useRef()
 
-    if (!input) return
+  const user = JSON.parse(localStorage.getItem("userProfile")) || {}
 
-    const newMessages = [
-      ...messages,
-      { role: "user", text: input }
-    ]
+  /* ---------------- CLOSE ON OUTSIDE CLICK ---------------- */
 
-    const reply = generateReply(input)
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (chatRef.current && !chatRef.current.contains(e.target)) {
+        setOpen(false)
+      }
+    }
 
-    setMessages([
-      ...newMessages,
-      { role: "ai", text: reply }
-    ])
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside)
+    }
 
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [open])
+
+  /* ---------------- SEND MESSAGE ---------------- */
+
+  const sendMessage = async () => {
+
+    if (!input.trim()) return
+
+    const userMsg = { role: "user", text: input }
+    setMessages(prev => [...prev, userMsg])
+    setLoading(true)
+
+    try {
+        const prs = localStorage.getItem("prs") || 50
+      const res = await fetch("http://localhost:5000/api/ai/question", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+        role: `
+        User PRS: ${prs}
+
+        User question: ${input}
+
+       Give personalized advice based on PRS.
+       Low PRS → basic guidance
+       High PRS → advanced tips
+      `
+  })
+      })
+
+      const data = await res.json()
+
+      const aiReply = {
+        role: "ai",
+        text: data.reply || "I can help you with interview prep!"
+      }
+
+      setMessages(prev => [...prev, aiReply])
+
+    } catch (err) {
+
+      setMessages(prev => [
+        ...prev,
+        { role: "ai", text: "AI not available right now." }
+      ])
+    }
+
+    setLoading(false)
     setInput("")
-  }
-
-  const generateReply = (text) => {
-
-    text = text.toLowerCase()
-
-    if (text.includes("resume"))
-      return "Tip: Keep your resume to 1 page and highlight measurable achievements."
-
-    if (text.includes("interview"))
-      return "Practice STAR method: Situation, Task, Action, Result."
-
-    if (text.includes("skills"))
-      return "Top skills for placements: DSA, React, System Design, Communication."
-
-    return "Good question! Practice consistently and review your interview feedback."
   }
 
   return (
@@ -60,11 +95,55 @@ export default function AIMentorChatbot() {
 
       {open && (
 
-        <div className="fixed bottom-20 right-6 w-80 bg-white rounded-xl shadow-xl flex flex-col z-[9999]">
+        <div
+          ref={chatRef}
+          className="fixed bottom-20 right-6 w-80 bg-white rounded-xl shadow-2xl flex flex-col z-[9999]"
+        >
 
-          <div className="bg-blue-600 text-white p-3 rounded-t-xl">
-            AI Mentor
+          {/* HEADER */}
+
+          <div className="bg-blue-600 text-white p-3 rounded-t-xl flex justify-between items-center">
+
+            <span>AI Mentor</span>
+
+            {/* ❌ CLOSE BUTTON */}
+            <button
+              onClick={() => setOpen(false)}
+              className="text-white text-lg font-bold hover:text-gray-200"
+            >
+              ✕
+            </button>
+
           </div>
+
+          {/* QUICK ACTIONS */}
+
+          <div className="flex flex-wrap gap-2 p-2 border-b">
+
+            <button
+              onClick={() => setInput(`How can I improve my ${user.role || "skills"}?`)}
+              className="text-xs bg-gray-200 px-2 py-1 rounded"
+            >
+              Improve Skills
+            </button>
+
+            <button
+              onClick={() => setInput("Give me interview tips")}
+              className="text-xs bg-gray-200 px-2 py-1 rounded"
+            >
+              Interview Tips
+            </button>
+
+            <button
+              onClick={() => setInput("How to improve my resume?")}
+              className="text-xs bg-gray-200 px-2 py-1 rounded"
+            >
+              Resume Help
+            </button>
+
+          </div>
+
+          {/* CHAT */}
 
           <div className="p-3 h-64 overflow-y-auto space-y-2">
 
@@ -74,7 +153,7 @@ export default function AIMentorChatbot() {
                 key={i}
                 className={`p-2 rounded-lg text-sm ${
                   msg.role === "ai"
-                    ? "bg-gray-200"
+                    ? "bg-gray-200 text-left"
                     : "bg-blue-100 text-right"
                 }`}
               >
@@ -83,7 +162,13 @@ export default function AIMentorChatbot() {
 
             ))}
 
+            {loading && (
+              <p className="text-sm text-gray-400">Typing...</p>
+            )}
+
           </div>
+
+          {/* INPUT */}
 
           <div className="flex border-t">
 

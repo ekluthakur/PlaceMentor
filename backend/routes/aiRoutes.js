@@ -8,39 +8,45 @@ console.log("API KEY CHECK:", API_KEY)
 
 /* ---------------- GENERATE QUESTION ---------------- */
 
-router.post("/question", async (req,res)=>{
+router.post("/question", async (req, res) => {
+  try {
 
-try{
+    const { role } = req.body
 
-const { role } = req.body
+    const response = await axios.post(
+      "https://openrouter.ai/api/v1/chat/completions",
+      {
+        model: "openai/gpt-3.5-turbo",
+        messages: [
+          {
+            role: "user",
+            content: `You are an AI mentor.
+Give short helpful advice.
 
-const response = await axios.post(
-"https://openrouter.ai/api/v1/chat/completions",
-{
-model: "mistralai/mistral-7b-instruct",
-messages: [
-{
-role:"user",
-content:`Generate 1 ${role} interview question (easy level)`
-}
-]
-},
-{
-headers:{
-  Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-  "Content-Type":"application/json"
-}
-}
-)
+User query: ${role}`
+          }
+        ]
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          "Content-Type": "application/json",
+        "HTTP-Referer": "http://localhost:5173",
+          "X-Title": "PlaceMentor"
+        }
+      }
+    )
 
-res.json({
-question: response.data.choices[0].message.content
-})
+    const reply = response.data?.choices?.[0]?.message?.content
 
-}catch(err){
-res.status(500).json({msg:"AI question failed"})
-}
+    res.json({ reply })
 
+  } catch (err) {
+
+    console.log("❌ AI ERROR FULL:", err.response?.data || err.message)
+
+    res.status(500).json({ msg: "AI failed" })
+  }
 })
 
 /* ---------------- EVALUATE ANSWER ---------------- */
@@ -86,7 +92,9 @@ Answer: ${answer}
 {
 headers:{
   Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-  "Content-Type":"application/json"
+  "Content-Type":"application/json",
+  "HTTP-Referer": "http://localhost:5173",
+  "X-Title": "PlaceMentor"
 }
 }
 )
@@ -139,7 +147,9 @@ ${resumeText}
 {
 headers:{
   Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-  "Content-Type":"application/json"
+  "Content-Type":"application/json",
+  "HTTP-Referer": "http://localhost:5173",
+  "X-Title": "PlaceMentor"
 }
 }
 )
