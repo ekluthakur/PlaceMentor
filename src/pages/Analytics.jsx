@@ -30,7 +30,7 @@ useEffect(()=>{
 const data =
 JSON.parse(localStorage.getItem("interviewHistory")) || []
 
-setHistory(data)
+setHistory(data.slice(0,12))
 
 },[])
 
@@ -40,8 +40,8 @@ Prepare Chart Data
 
 const chartData = history.map((h,i)=>({
 name:`Interview ${i+1}`,
-PRS:h?.scores?.prs || 0,
-Performance:h?.scores?.overall || 0
+PRS:h?.prs || 0,
+Performance:h?.score || 0
 }))
 
 /* --------------------------------
@@ -60,7 +60,7 @@ Average PRS
 -------------------------------- */
 
 const avgPRS = history.length === 0 ? 0 : Math.round(
-history.reduce((a,b)=>a + (b?.scores?.prs || 0),0) / history.length
+history.reduce((a,b)=>a + (b?.prs || 0),0) / history.length
 )
 
 return(
@@ -107,7 +107,7 @@ Best Score
 
 <p className="text-3xl font-bold text-green-600">
 {history.length
-? Math.max(...history.map(h=>h?.scores?.prs || 0))
+? Math.max(...history.map(h=>h?.prs || 0))
 :0}
 </p>
 
@@ -267,11 +267,11 @@ Interview {i+1}
 </td>
 
 <td className="text-purple-600 font-semibold">
-{h?.scores?.prs || 0}
+{h?.prs || 0}
 </td>
 
 <td>
-{h?.scores?.overall || 0}
+{h?.score|| 0}
 </td>
 
 <td className="text-gray-500">

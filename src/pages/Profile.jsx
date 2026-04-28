@@ -21,15 +21,15 @@ export default function Profile() {
     navigate("/login")
   }
 
-  // ✅ FETCH FROM BACKEND
+  // ✅ FETCH USER (BACKEND + FALLBACK)
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const token = localStorage.getItem("token")
 
         if (!token) {
-            navigate("/login")
-            return
+          navigate("/login")
+          return
         }
 
         const res = await fetch("http://localhost:5000/api/auth/me", {
@@ -38,75 +38,82 @@ export default function Profile() {
           }
         })
 
-        if (!res.ok) {
-            throw new Error("Failed to fetch")
-        }
+        if (!res.ok) throw new Error("Failed")
 
         const data = await res.json()
 
-        console.log("USER DATA:", data)
+        // ✅ SET USER FROM BACKEND
+        setUser({
+          name: data.name || "",
+          email: data.email || "",
+          role: data.role || "",
+          bio: data.bio || "",
+          photo: data.photo || "",
+          prs: Number(localStorage.getItem("prs")) || data.prs || 0
+        })
 
-        if (res.ok) {
-          setUser({
-            name: data.name || "",
-            email: data.email || "",
-            role: data.role || "",
-            bio: data.bio || "",
-            photo: data.photo || "",
-            prs: data.prs || 0
-          })
-        } else {
-          alert("❌ " + data.message)
-          navigate("/login")
-        }
+        // ✅ SAVE LOCALLY (IMPORTANT)
+        localStorage.setItem("userProfile", JSON.stringify(data))
 
       } catch (err) {
-        console.log(err)
+        console.log("Backend failed → using local")
+
+        // ✅ FALLBACK LOCAL DATA
+        const local = JSON.parse(localStorage.getItem("userProfile") || "{}")
+
+        setUser({
+          name: local.name || "Ekta Chauhan",
+          email: local.email || "ektachauhan1005@gmail.com",
+          role: local.role || "Frontend Developer",
+          bio: local.bio || "",
+          photo: local.photo || "",
+          prs: Number(localStorage.getItem("prs")) || 0
+        })
       }
     }
 
     fetchUser()
   }, [navigate])
 
-const saveProfile = async () => {
-  try {
-    const token = localStorage.getItem("token")
+  // ✅ SAVE PROFILE
+  const saveProfile = async () => {
+    try {
+      const token = localStorage.getItem("token")
 
-    const res = await fetch("http://localhost:5000/api/auth/update", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(user)
-    })
+      const res = await fetch("http://localhost:5000/api/auth/update", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(user)
+      })
 
-    const data = await res.json()
+      const data = await res.json()
 
-    if (res.ok) {
-      setUser(data.user)
+      if (res.ok) {
+        setUser(data.user)
+        setEditing(false)
+
+        // ✅ UPDATE LOCAL ALSO
+        localStorage.setItem("userProfile", JSON.stringify(data.user))
+
+        alert("✅ Profile updated")
+      } else {
+        alert("❌ " + data.message)
+      }
+
+    } catch (err) {
+      console.log(err)
+      alert("❌ Server error (saved locally)")
+
+      // ✅ SAVE LOCALLY EVEN IF API FAILS
+      localStorage.setItem("userProfile", JSON.stringify(user))
       setEditing(false)
-      alert("✅ Profile updated")
-    } else {
-      alert("❌ " + data.message)
     }
-
-  } catch (err) {
-    console.log(err)
-    alert("❌ Server error")
-    const local = JSON.parse(localStorage.getItem("userProfile") || "{}")
-
-setUser({
-  name: local.name || "Demo User",
-  email: local.email || "demo@gmail.com",
-  role: local.role || "Frontend Developer",
-  bio: local.bio || "",
-  photo: local.photo || "",
-  prs: local.prs || 0
-})
   }
-}
 
+  // ✅ PHOTO CHANGE
   const changePhoto = (e) => {
     const file = e.target.files[0]
 
@@ -141,31 +148,54 @@ setUser({
 
         <div className="grid md:grid-cols-2 gap-6 mt-8">
 
-          <input value={user.name} disabled={!editing}
+          <input
+            value={user.name}
+            disabled={!editing}
             onChange={(e)=>setUser({...user,name:e.target.value})}
-            className="border p-2 rounded" />
+            className="border p-2 rounded"
+          />
 
-          <input value={user.email} disabled className="border p-2 rounded" />
+          <input
+            value={user.email}
+            disabled
+            className="border p-2 rounded"
+          />
 
-          <input value={user.role} disabled={!editing}
+          <input
+            value={user.role}
+            disabled={!editing}
             onChange={(e)=>setUser({...user,role:e.target.value})}
-            className="border p-2 rounded" />
+            className="border p-2 rounded"
+          />
 
-          <input value={user.prs} disabled className="border p-2 rounded" />
+          <input
+            value={user.prs}
+            disabled
+            className="border p-2 rounded"
+          />
 
-          <textarea value={user.bio} disabled={!editing}
+          <textarea
+            value={user.bio}
+            disabled={!editing}
             onChange={(e)=>setUser({...user,bio:e.target.value})}
-            className="border p-2 rounded col-span-2" />
+            className="border p-2 rounded col-span-2"
+          />
 
         </div>
 
         <div className="mt-6">
           {editing ? (
-            <button onClick={saveProfile} className="bg-green-600 text-white px-6 py-2 rounded">
+            <button
+              onClick={saveProfile}
+              className="bg-green-600 text-white px-6 py-2 rounded"
+            >
               Save
             </button>
           ) : (
-            <button onClick={()=>setEditing(true)} className="bg-blue-600 text-white px-6 py-2 rounded">
+            <button
+              onClick={()=>setEditing(true)}
+              className="bg-blue-600 text-white px-6 py-2 rounded"
+            >
               Edit
             </button>
           )}
@@ -175,18 +205,24 @@ setUser({
 
       <div className="flex gap-4 mt-8">
 
-        <button onClick={()=>navigate("/profile-analytics")}
-          className="bg-purple-600 text-white px-6 py-2 rounded">
+        <button
+          onClick={()=>navigate("/profile-analytics")}
+          className="bg-purple-600 text-white px-6 py-2 rounded"
+        >
           Analytics
         </button>
 
-        <button onClick={()=>navigate("/interview-history")}
-          className="bg-blue-600 text-white px-6 py-2 rounded">
+        <button
+          onClick={()=>navigate("/interview-history")}
+          className="bg-blue-600 text-white px-6 py-2 rounded"
+        >
           History
         </button>
 
-        <button onClick={handleLogout}
-          className="bg-red-600 text-white px-6 py-2 rounded">
+        <button
+          onClick={handleLogout}
+          className="bg-red-600 text-white px-6 py-2 rounded"
+        >
           Logout
         </button>
 

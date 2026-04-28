@@ -117,15 +117,14 @@ useEffect(()=>{
 useEffect(() => {
 
 const result = {
-id: Date.now(),
-name: JSON.parse(localStorage.getItem("userProfile"))?.name || "User",
-company: data.company || "Practice",
-role: data.role || "Mock Interview",
-prs: prsScore,
-score: overallScore,
-date: new Date().toLocaleDateString()
+  id: Date.now(),
+  userName: JSON.parse(localStorage.getItem("userProfile"))?.userName || "User",
+  company: data.company || "Practice",
+  role: data.role || "Mock Interview",
+  prs: prsScore,
+  score: overallScore,
+  date: new Date().toLocaleDateString()
 }
-
 // ✅ PRS UPDATE (SMART)
 const interviewScore = prsScore
 const oldPRS = Number(localStorage.getItem("prs")) || 0
