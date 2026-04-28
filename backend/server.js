@@ -19,8 +19,6 @@ connectDB()
 
 const app = express()
 
-const aiRoutes = require("./routes/ai")
-
 app.use(cors())
 app.use(express.json())
 app.use("/api/github", githubRoutes)

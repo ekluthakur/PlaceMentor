@@ -2,6 +2,11 @@ import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import GlassCard from "../components/cards/GlassCard"
 import SectionTitle from "../components/ui/SectionTitle"
+import { parseResume } from "../utils/resumeParser"
+import * as pdfjsLib from "pdfjs-dist"
+import worker from "pdfjs-dist/build/pdf.worker?url"
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = worker
 
 export default function ResumeUpload(){
 
@@ -38,24 +43,61 @@ handleFile(uploadedFile)
 Analyze Resume
 ------------------------------ */
 
-const analyzeResume = ()=>{
+const analyzeResume = async()=>{
+  if (!file) return
 
-if(!file) return
+  setLoading(true)
 
-setLoading(true)
+  try {
 
-/* simulate backend call */
+    const text = await parseResume(file)
 
-setTimeout(()=>{
+    const res = await fetch("http://localhost:5000/api/ai/skills", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ resumeText: text })
+    })
 
-navigate("/resume-analyzer",{
-state:{
-name:file.name,
-size:file.size
-}
-})
+    const data = await res.json()
 
-},1500)
+    console.log("API RESPONSE:", data)
+
+    const skills = (data.skills || []).map(s => s.toLowerCase())
+
+    const required = ["react","node.js","mongodb","dsa"]
+
+    const matched = required.filter(skill =>
+      skills.includes(skill)
+    )
+
+    const atsScore = Math.round((matched.length / required.length) * 100)
+
+    let resumeScore = 40
+    if(text.length > 50) resumeScore += 20
+    if(text.includes("project")) resumeScore += 10
+    if(text.includes("react")) resumeScore += 10
+    if(skills.length > 2) resumeScore += 20
+
+    resumeScore = Math.min(resumeScore,100)
+
+    // ✅ SAVE DATA (MOST IMPORTANT)
+    localStorage.setItem("resumeData", JSON.stringify({
+      resumeScore,
+      atsScore,
+      skills
+    }))
+
+    // ✅ NAVIGATE
+    navigate("/resume-analyzer")
+
+  } catch (err) {
+    console.log(err)
+    alert("AI failed")
+  }
+
+  setLoading(false)
 
 }
 

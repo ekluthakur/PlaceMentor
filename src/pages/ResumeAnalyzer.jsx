@@ -30,56 +30,58 @@ const suggestions = [
 
 /* ---------------- AI + LOGIC ---------------- */
 
-const analyzeResume = async ()=>{
+// const analyzeResume = async ()=>{
 
-if(!text || text.length < 50){
-alert("Please paste a valid resume")
-return
-}
+// if(!text || text.length < 50){
+// alert("Please paste a valid resume")
+// return
+// }
 
-try{
+// try{
 
-const res = await fetch("http://localhost:5000/api/ai/skills",{
-method:"POST",
-headers:{ "Content-Type":"application/json" },
-body: JSON.stringify({ resumeText:text })
-})
+// const res = await fetch("http://localhost:5000/api/ai/skills",{
+// method:"POST",
+// headers:{ "Content-Type":"application/json" },
+// body: JSON.stringify({ resumeText:text })
+// })
 
-const data = await res.json()
+// const data = await res.json()
 
-/* ✅ NORMALIZE SKILLS (IMPORTANT FIX) */
-const extractedSkills = (data.skills || []).map(s =>
-s.toLowerCase()
-)
+// console.log("API RESPONSE:", data)
 
-setSkills(extractedSkills)
+// /* ✅ NORMALIZE SKILLS (IMPORTANT FIX) */
+// const extractedSkills = (data.skills || []).map(s =>
+// s.toLowerCase()
+// )
 
-/* ✅ REQUIRED SKILLS LOWERCASE */
-const required = ["react","node.js","mongodb","dsa"]
+// setSkills(extractedSkills)
 
-/* ✅ ATS SCORE FIX */
-const matched = required.filter(skill =>
-extractedSkills.includes(skill)
-)
+// /* ✅ REQUIRED SKILLS LOWERCASE */
+// const required = ["react","node.js","mongodb","dsa"]
 
-const ats = Math.round((matched.length / required.length) * 100)
-setATSScore(ats)
+// /* ✅ ATS SCORE FIX */
+// const matched = required.filter(skill =>
+// extractedSkills.includes(skill)
+// )
 
-/* ✅ RESUME SCORE FIX */
-let score = 40
+// const ats = Math.round((matched.length / required.length) * 100)
+// setATSScore(ats)
 
-if(text.length > 300) score += 20
-if(text.toLowerCase().includes("project")) score += 10
-if(text.toLowerCase().includes("experience")) score += 10
-if(extractedSkills.length > 3) score += 20
+// /* ✅ RESUME SCORE FIX */
+// let score = 40
 
-setResumeScore(Math.min(score,100))
+// if(text.length > 300) score += 20
+// if(text.toLowerCase().includes("project")) score += 10
+// if(text.toLowerCase().includes("experience")) score += 10
+// if(extractedSkills.length > 3) score += 20
 
-}catch(err){
-console.log(err)
-alert("Failed to analyze resume")
-}
-}
+// setResumeScore(Math.min(score,100))
+
+// }catch(err){
+// console.log(err)
+// alert("Failed to analyze resume")
+// }
+// }
 
 /* ---------------- SKILL GAP ---------------- */
 
@@ -95,11 +97,7 @@ useEffect(() => {
     setATSScore(stored.atsScore || 75)
     setSkills(stored.skills || ["React", "JavaScript"])
   }
-  localStorage.setItem("resumeData", JSON.stringify({
-  resumeScore: Math.min(resumeScore,100),
-  atsScore: atsScore,
-  skills: skills
-}))
+
 }, [])
 
 /* ---------------- UI (UNCHANGED) ---------------- */

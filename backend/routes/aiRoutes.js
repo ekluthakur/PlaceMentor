@@ -4,6 +4,7 @@ import axios from "axios"
 const router = express.Router()
 
 const API_KEY = process.env.OPENROUTER_API_KEY
+console.log("API KEY CHECK:", API_KEY)
 
 /* ---------------- GENERATE QUESTION ---------------- */
 
@@ -26,8 +27,8 @@ content:`Generate 1 ${role} interview question (easy level)`
 },
 {
 headers:{
-Authorization:`Bearer ${API_KEY}`,
-"Content-Type":"application/json"
+  Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+  "Content-Type":"application/json"
 }
 }
 )
@@ -53,7 +54,7 @@ const { question, answer } = req.body
 const response = await axios.post(
 "https://openrouter.ai/api/v1/chat/completions",
 {
-model:"deepseek/deepseek-chat",
+model:"deepseek/deepseek-chat-v3",
 messages:[
 {
 role:"user",
@@ -78,8 +79,8 @@ Return JSON:
 },
 {
 headers:{
-Authorization:`Bearer ${API_KEY}`,
-"Content-Type":"application/json"
+  Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+  "Content-Type":"application/json"
 }
 }
 )
@@ -109,14 +110,19 @@ const { resumeText } = req.body
 const response = await axios.post(
 "https://openrouter.ai/api/v1/chat/completions",
 {
-model:"google/gemma-7b-it",
+model:"openai/gpt-3.5-turbo",
 messages:[
 {
 role:"user",
-content:`
+
+content: `
 Extract all technical skills from this resume.
 
-Return only array format.
+Return ONLY valid JSON array.
+No explanation.
+
+Example:
+["react.js","node.js","mongodb"]
 
 Resume:
 ${resumeText}
@@ -126,8 +132,8 @@ ${resumeText}
 },
 {
 headers:{
-Authorization:`Bearer ${API_KEY}`,
-"Content-Type":"application/json"
+  Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+  "Content-Type":"application/json"
 }
 }
 )
@@ -135,9 +141,20 @@ Authorization:`Bearer ${API_KEY}`,
 let text = response.data.choices[0].message.content
 text = text.replace(/```json|```/g,"")
 
-res.json({ skills: JSON.parse(text) })
+
+let skills = []
+
+try {
+  skills = JSON.parse(text)
+} catch {
+  console.log("JSON PARSE ERROR:", text)
+  skills = []
+}
+
+res.json({ skills })
 
 }catch(err){
+console.log("AI ERROR:", err.response?.data || err.message)
 res.status(500).json({msg:"Skill extraction failed"})
 }
 
