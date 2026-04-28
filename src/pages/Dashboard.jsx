@@ -105,25 +105,26 @@ users:1340
 
 /* Skill Gap Detection */
 
-const skillGap = {
-missing:["System Design","Advanced React","Data Structures"],
-
-courses:[
-{
-skill:"System Design",
-course:"Scalable System Design Fundamentals"
-},
-
-{
-skill:"Advanced React",
-course:"React Performance Optimization"
-},
-
-{
-skill:"Data Structures",
-course:"DSA for Coding Interviews"
+const requiredSkillsByRole = {
+  "Frontend Developer": ["React", "JavaScript", "CSS", "System Design"],
+  "Backend Developer": ["NodeJS", "Databases", "API Design", "System Design"],
+  "AI Engineer": ["Python", "Machine Learning", "Deep Learning"]
 }
-]
+
+const userSkills = resumeData.skills || []
+
+const requiredSkills = requiredSkillsByRole[user.role] || []
+
+const missingSkills = requiredSkills.filter(
+  skill => !userSkills.includes(skill)
+)
+
+const skillGap = {
+  missing: missingSkills,
+  courses: missingSkills.map(skill => ({
+    skill,
+    course: `Learn ${skill} fundamentals`
+  }))
 }
 
 return(

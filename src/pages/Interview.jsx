@@ -18,12 +18,12 @@ export default function Interview() {
 }
 
   const videoRef = useRef(null)
-
+  const [answer, setAnswer] = useState("")
   const [questions, setQuestions] = useState([])
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [time, setTime] = useState(0)
   const [recording, setRecording] = useState(false)
-  const [answer, setAnswer] = useState("")
+  const [answers, setAnswers] = useState([])
   const [listening, setListening] = useState(false)
   const [aiSpeaking, setAISpeaking] = useState(false)
   // ✅ FETCH QUESTIONS FROM API
@@ -124,11 +124,13 @@ useEffect(() => {
     alert("Please write or speak your answer first")
     return
   }
+  // ✅ SAVE CURRENT ANSWER
+  setAnswers(prev => [...prev, answer])
 
-  await submitAnswer()   // ✅ SAVE ANSWER FIRST
+  await submitAnswer()   // ✅ SAVE ANSWER 
 
-  if (questions.length > 0 && currentQuestion < questions.length - 1) {
-    setCurrentQuestion(currentQuestion + 1)
+  if (currentQuestion < questions.length - 1) {
+    setCurrentQuestion(prev => prev + 1)
     setAnswer("")
 
     setTimeout(() => {
@@ -140,9 +142,20 @@ useEffect(() => {
 }
 
 
-  const finishInterview = () => {
-    navigate("/feedback")
+const finishInterview = () => {
+
+const finalAnswers = [...answers, answer] // include last answer
+
+navigate("/feedback", {
+  state: {
+    questionsAnswered: currentQuestion + 1,
+    totalQuestions: questions.length,
+    answerLength: answer.length,
+    answers: finalAnswers,
+    questions
   }
+})
+}
 
   // ✅ VOICE INPUT
   const startListening = () => {
@@ -190,8 +203,8 @@ const submitAnswer = async () => {
         difficulty: setup.difficulty,
 
         // simple demo scoring (you can upgrade later)
-        score: overallScore,
-        prs: prsScore
+        score: 0,
+        prs: 0
       })
     })
 
@@ -333,7 +346,9 @@ const submitAnswer = async () => {
             state: {
               answerLength: answer.length,
               questionsAnswered: currentQuestion + 1,
-              totalQuestions: questions.length
+              totalQuestions: questions.length,
+              answers: [...answers, answer],
+              questions
             }
           })}
           className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition"

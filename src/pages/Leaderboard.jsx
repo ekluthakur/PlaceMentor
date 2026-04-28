@@ -32,17 +32,17 @@ const grouped = {}
 
 history.forEach((item,i)=>{
 
-const name = item.company || "User"
+const name = item.userName || "User"
 
 if(!grouped[name]){
 grouped[name] = {
 id:i,
 name,
-prs:item.prs
+prs:item.prs || 0
 }
 }else{
 grouped[name].prs =
-Math.max(grouped[name].prs,item.prs)
+Math.max(grouped[name].prs,item.prs || 0)
 }
 
 })
