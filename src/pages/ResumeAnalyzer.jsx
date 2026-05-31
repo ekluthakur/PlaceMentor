@@ -85,7 +85,7 @@ const suggestions = [
 
 /* ---------------- SKILL GAP ---------------- */
 
-const missingSkills = ["react","node.js","mongodb","dsa"].filter(
+const missingSkills = ["next.js","mongoose","dsa"].filter(
 skill => !skills.includes(skill)
 )
 
