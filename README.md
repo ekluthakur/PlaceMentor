@@ -77,7 +77,8 @@ PlaceMentor addresses these challenges by integrating interview practice, resume
 The landing page introduces PlaceMentor's core capabilities and provides users with direct access to interview preparation, resume analysis, and account registration.
 
 <div align="center">
-  <img src="./screenshots/Screenshot%20(14).png" alt="PlaceMentor Landing Page" width="100%">
+  <img src="<img width="1919" height="909" alt="Screenshot 2026-03-25 184722" src="https://github.com/user-attachments/assets/263fa16a-0526-4bcd-a780-14097d0022bf" />
+" alt="PlaceMentor Landing Page" width="100%">
 </div>
 
 ### 2. User Registration and Authentication
@@ -102,10 +103,12 @@ Supported target roles include:
   </tr>
   <tr>
     <td>
-      <img src="./screenshots/Screenshot%20(16).png" alt="Registration Page" width="100%">
+      <img src="<img width="1897" height="894" alt="register" src="https://github.com/user-attachments/assets/a42c5083-c5cf-4491-abf7-213596c61ae2" />
+" alt="Registration Page" width="100%">
     </td>
     <td>
-      <img src="./screenshots/Screenshot%20(17).png" alt="Login Page" width="100%">
+      <img src="<img width="1920" height="1080" alt="Screenshot (17)" src="https://github.com/user-attachments/assets/801e6d2f-391a-473e-a96b-ce8e4d6b478e" />
+" alt="Login Page" width="100%">
     </td>
   </tr>
 </table>
@@ -124,7 +127,8 @@ Key functionalities include:
 - AI-recommended interview topics.
 
 <div align="center">
-  <img src="./screenshots/Dashboard.png" alt="PlaceMentor Personalized Dashboard" width="100%">
+  <img src="<img width="1920" height="1080" alt="r2" src="https://github.com/user-attachments/assets/72581de7-f5a5-463a-bbb9-874460cfc145" />
+" alt="PlaceMentor Personalized Dashboard" width="100%">
 </div>
 
 ### 4. Configurable Mock Interviews
@@ -145,7 +149,8 @@ The interface includes preparation options for eight companies:
 Google, Amazon, Microsoft, Meta, TCS, Infosys, Wipro, and Accenture.
 
 <div align="center">
-  <img src="./screenshots/interview.png" alt="Mock Interview Configuration" width="100%">
+  <img src="<img width="1920" height="1080" alt="interview" src="https://github.com/user-attachments/assets/875a160e-920e-42a5-a664-15ea384defa9" />
+" alt="Mock Interview Configuration" width="100%">
 </div>
 
 ### 5. AI-Powered Interview Room
@@ -162,7 +167,8 @@ Core capabilities include:
 - AI-assisted feedback.
 
 <div align="center">
-  <img src="./screenshots/Screenshot%20(13).png" alt="AI Powered Interview Room" width="100%">
+  <img src="<img width="1920" height="1080" alt="Screenshot (13)" src="https://github.com/user-attachments/assets/9b009fca-2326-4e6d-a968-9c09d2f59244" />
+" alt="AI Powered Interview Room" width="100%">
 </div>
 
 ### 6. AI Resume Analyzer
@@ -182,10 +188,12 @@ Users can upload resumes in supported document formats and access structured eva
   </tr>
   <tr>
     <td>
-      <img src="./screenshots/r1.png" alt="Resume Upload Interface" width="100%">
+      <img src="<img width="1900" height="906" alt="Screenshot 2026-03-25 191358" src="https://github.com/user-attachments/assets/abdbd704-ae97-4966-b709-3258310898f8" />
+" alt="Resume Upload Interface" width="100%">
     </td>
     <td>
-      <img src="./screenshots/r2.png" alt="Resume Analysis Results" width="100%">
+      <img src="<img width="1920" height="1080" alt="Screenshot (13)" src="https://github.com/user-attachments/assets/949987bb-9d30-4485-bb4c-16b803c1c1e5" />
+" alt="Resume Analysis Results" width="100%">
     </td>
   </tr>
 </table>
@@ -216,11 +224,13 @@ Key analytical components include:
 - Historical interview records.
 
 <div align="center">
-  <img src="./screenshots/Analytic.png" alt="Interview Performance Analytics" width="100%">
+  <img src="<img width="1900" height="906" alt="Screenshot 2026-03-25 191358" src="https://github.com/user-attachments/assets/e4457914-8b3c-427f-82dc-f5de0c1a9b85" />
+" alt="Interview Performance Analytics" width="100%">
 </div>
 
 <div align="center">
-  <img src="./screenshots/data.png" alt="PRS Distribution and Interview History" width="100%">
+  <img src="<img width="1890" height="902" alt="Screenshot 2026-03-25 190344" src="https://github.com/user-attachments/assets/68f0e1ce-6127-4b72-9004-7905ac2e8a36" />
+" alt="PRS Distribution and Interview History" width="100%">
 </div>
 
 ### 8. Hiring and Interview Insights
@@ -236,7 +246,8 @@ The module presents:
 - Recommended preparation opportunities.
 
 <div align="center">
-  <img src="./screenshots/Screenshot%20(19).png" alt="Hiring and Interview Insights" width="100%">
+  <img src="<img width="1890" height="902" alt="Screenshot 2026-03-25 190344" src="https://github.com/user-attachments/assets/57daa298-3ab1-44e3-8740-72ea8dec89d0" />
+" alt="Hiring and Interview Insights" width="100%">
 </div>
 
 ### 9. Placement Readiness Leaderboard
@@ -251,7 +262,8 @@ Features include:
 - Top 10 ranking filter.
 
 <div align="center">
-  <img src="./screenshots/Screenshot%20(25).png" alt="Placement Readiness Leaderboard" width="100%">
+  <img src="<img width="1920" height="1080" alt="Screenshot (26)" src="https://github.com/user-attachments/assets/31d4932e-f8cb-457c-bf03-81636916091e" />
+" alt="Placement Readiness Leaderboard" width="100%">
 </div>
 
 ### 10. Community and Peer Learning
@@ -268,7 +280,8 @@ Community functionalities include:
 - Viewing trending posts and contributors.
 
 <div align="center">
-  <img src="./screenshots/Screenshot%20(26).png" alt="PlaceMentor Community Platform" width="100%">
+  <img src="<img width="1920" height="1080" alt="Screenshot (26)" src="https://github.com/user-attachments/assets/38dac2be-a72f-4808-ab8d-7d0620bff1d3" />
+" alt="PlaceMentor Community Platform" width="100%">
 </div>
 
 ---
