@@ -76,10 +76,7 @@ PlaceMentor addresses these challenges by integrating interview practice, resume
 
 The landing page introduces PlaceMentor's core capabilities and provides users with direct access to interview preparation, resume analysis, and account registration.
 
-<div align="center">
-  "<img src="<img width="1919" height="909" alt="Screenshot 2026-03-25 184722" src="https://github.com/user-attachments/assets/263fa16a-0526-4bcd-a780-14097d0022bf" />
-" alt="PlaceMentor Landing Page" width="100%">
-</div>
+[Landing Page](screenshots/Screenshot%20%2814%29.png)
 
 ### 2. User Registration and Authentication
 
